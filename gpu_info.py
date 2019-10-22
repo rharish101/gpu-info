@@ -18,18 +18,18 @@ def print_usage(usage, indent=2):
     )
     for user in sorted_keys:
         user_name = user if user != FREE else "FREE:"
-        print("\t" * indent + "{}: {} MiB".format(user_name, usage[user]))
+        print("\t" * indent + f"{user_name}: {usage[user]} MiB")
 
 
 def print_info(info):
     """Print all usage info including overall usage."""
     overall_usage = {}
     for host in info:
-        print('Host "{}":'.format(host))
+        print(f'Host "{host}":')
         host_usage = {}
 
         for num, gpu in enumerate(info[host]):
-            print("\tGPU {} Usage:".format(num))
+            print(f"\tGPU {num} Usage:")
             print_usage(gpu)
             for user in gpu:
                 host_usage[user] = host_usage.get(user, 0) + gpu[user]
@@ -61,8 +61,8 @@ def main(args):
             [
                 "ssh",
                 "-o",
-                "ConnectTimeout=5",
-                "{}@{}".format(args.username, host),
+                f"ConnectTimeout={args.timeout}",
+                f"{args.username}@{host}",
                 "python3",
             ],
             stdin=PIPE,
@@ -73,7 +73,7 @@ def main(args):
 
         if proc.returncode != 0:
             print("-" * 50)
-            print('Error encountered for host "{}"'.format(host))
+            print(f'Error encountered for host "{host}":')
             print(err.decode("utf8").strip())
             print("-" * 50, end="\n\n")
         else:
@@ -96,5 +96,8 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-u", "--username", type=str, default=getuser(), help="SSH username"
+    )
+    parser.add_argument(
+        "-t", "--timeout", type=int, default=5, help="SSH timeout"
     )
     main(parser.parse_args())
