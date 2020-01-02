@@ -3,9 +3,11 @@
 import json
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from getpass import getuser
-from subprocess import PIPE, Popen
+from subprocess import PIPE, Popen, TimeoutExpired
 
 from gpu_usage import FREE
+
+USAGE_CODE = "gpu_usage.py"
 
 
 def print_usage(usage, indent=2):
@@ -52,7 +54,7 @@ def main(args):
             arguments
 
     """
-    with open("gpu_usage.py", "rb") as usage_file:
+    with open(USAGE_CODE, "rb") as usage_file:
         usage_code = usage_file.read()
 
     info = {}
@@ -69,7 +71,15 @@ def main(args):
             stdout=PIPE,
             stderr=PIPE,
         )
-        output, err = proc.communicate(input=usage_code)
+
+        try:
+            output, err = proc.communicate(
+                input=usage_code, timeout=args.timeout
+            )
+        except TimeoutExpired:
+            proc.kill()
+            output, _ = proc.communicate()
+            err = b"Python script timed out"
 
         if proc.returncode != 0:
             print("-" * 50)
@@ -98,6 +108,10 @@ if __name__ == "__main__":
         "-u", "--username", type=str, default=getuser(), help="SSH username"
     )
     parser.add_argument(
-        "-t", "--timeout", type=int, default=5, help="SSH timeout"
+        "-t",
+        "--timeout",
+        type=int,
+        default=5,
+        help="timeout for the entire SSH command",
     )
     main(parser.parse_args())
