@@ -7,7 +7,7 @@ from getpass import getuser
 
 from gpu_usage import FREE
 
-USAGE_CODE = "gpu_usage.py"
+USAGE_SCRIPT = "gpu_usage.py"
 
 
 def print_error(hostname, message):
@@ -68,7 +68,7 @@ def main(args):
             arguments
 
     """
-    with open(USAGE_CODE, "rb") as usage_file:
+    with open(USAGE_SCRIPT, "r") as usage_file:
         usage_code = usage_file.read()
 
     info = {}
@@ -89,7 +89,10 @@ def main(args):
         else:
             info[host] = json.loads(proc.stdout)
 
-    print_info(info)
+    if info:
+        print_info(info)
+    else:
+        exit(-1)
 
 
 if __name__ == "__main__":
