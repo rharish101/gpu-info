@@ -1,13 +1,27 @@
 #!/usr/bin/env python3
 """Get GPU usage over multiple hosts."""
 import json
+import subprocess
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from getpass import getuser
-from subprocess import PIPE, Popen, TimeoutExpired
 
 from gpu_usage import FREE
 
 USAGE_CODE = "gpu_usage.py"
+
+
+def print_error(hostname, message):
+    """Print the error message with decoration to highlight it.
+
+    Args:
+        hostname (str): The hostname for which the error occured
+        message (str): The error message to print
+
+    """
+    print("-" * 50)
+    print(f'Error encountered for host "{hostname}":')
+    print(message)
+    print("-" * 50, end="\n\n")
 
 
 def print_usage(usage, indent=2):
@@ -59,35 +73,21 @@ def main(args):
 
     info = {}
     for host in args.hosts:
-        proc = Popen(
-            [
-                "ssh",
-                "-o",
-                f"ConnectTimeout={args.timeout}",
-                f"{args.username}@{host}",
-                "python3",
-            ],
-            stdin=PIPE,
-            stdout=PIPE,
-            stderr=PIPE,
-        )
-
         try:
-            output, err = proc.communicate(
-                input=usage_code, timeout=args.timeout
+            proc = subprocess.run(
+                ["ssh", f"{args.username}@{host}", "python3"],
+                input=usage_code,
+                capture_output=True,
+                timeout=args.timeout,
+                check=True,
+                text=True,
             )
-        except TimeoutExpired:
-            proc.kill()
-            output, _ = proc.communicate()
-            err = b"Python script timed out"
-
-        if proc.returncode != 0:
-            print("-" * 50)
-            print(f'Error encountered for host "{host}":')
-            print(err.decode("utf8").strip())
-            print("-" * 50, end="\n\n")
+        except subprocess.TimeoutExpired:
+            print_error(host, "SSH timed out")
+        except subprocess.CalledProcessError as ex:
+            print_error(host, ex.stderr.strip())
         else:
-            info[host] = json.loads(output.decode("utf8"))
+            info[host] = json.loads(proc.stdout)
 
     print_info(info)
 
