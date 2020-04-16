@@ -11,17 +11,15 @@ USAGE_SCRIPT = "gpu_usage.py"
 
 
 def print_error(hostname, message):
-    """Print the error message with decoration to highlight it.
+    """Print the error message.
 
     Args:
         hostname (str): The hostname for which the error occured
         message (str): The error message to print
 
     """
-    print("-" * 50)
     print(f'Error encountered for host "{hostname}":')
-    print(message)
-    print("-" * 50, end="\n\n")
+    print(message, end="\n\n")  # adding a blank line after the message
 
 
 def print_usage(usage, indent=2):
