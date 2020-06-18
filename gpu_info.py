@@ -69,11 +69,15 @@ def main(args):
     with open(USAGE_SCRIPT, "r") as usage_file:
         usage_code = usage_file.read()
 
+    cmd = ["ssh"]
+    if args.jump_host is not None:
+        cmd += ["-J", f"{args.username}@{args.jump_host}"]
+
     info = {}
     for host in args.hosts:
         try:
             proc = subprocess.run(
-                ["ssh", f"{args.username}@{host}", "python3"],
+                cmd + [f"{args.username}@{host}", "python3"],
                 input=usage_code,
                 capture_output=True,
                 timeout=args.timeout,
@@ -107,6 +111,9 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-u", "--username", type=str, default=getuser(), help="SSH username"
+    )
+    parser.add_argument(
+        "-J", "--jump-host", type=str, help="jump host for SSH"
     )
     parser.add_argument(
         "-t",
