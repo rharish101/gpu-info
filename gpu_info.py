@@ -2,27 +2,27 @@
 """Get GPU usage over multiple hosts."""
 import json
 import subprocess
-from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
+from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 from getpass import getuser
+from typing import Dict, List
 
 from gpu_usage import FREE
 
 USAGE_SCRIPT = "gpu_usage.py"
 
 
-def print_error(hostname, message):
+def print_error(hostname: str, message: str) -> None:
     """Print the error message.
 
     Args:
-        hostname (str): The hostname for which the error occured
-        message (str): The error message to print
-
+        hostname: The hostname for which the error occured
+        message: The error message to print
     """
     print(f'Error encountered for host "{hostname}":')
     print(message, end="\n\n")  # adding a blank line after the message
 
 
-def print_usage(usage, indent=2):
+def print_usage(usage: Dict[str, int], indent: int = 2) -> None:
     """Print the usage dictionary."""
     # Sort in decreasing usage order, keeping free at last
     sorted_keys = sorted(
@@ -35,12 +35,12 @@ def print_usage(usage, indent=2):
         print("\t" * indent + f"{user_name}: {usage[user]} MiB")
 
 
-def print_info(info):
+def print_info(info: Dict[str, List[Dict[str, int]]]) -> None:
     """Print all usage info including overall usage."""
-    overall_usage = {}
+    overall_usage: Dict[str, int] = {}
     for host in info:
         print(f'Host "{host}":')
-        host_usage = {}
+        host_usage: Dict[str, int] = {}
 
         for num, gpu in enumerate(info[host]):
             print(f"\tGPU {num} Usage:")
@@ -58,13 +58,11 @@ def print_info(info):
     print_usage(overall_usage, indent=1)
 
 
-def main(args):
+def main(args: Namespace) -> None:
     """Run the main program.
 
     Arguments:
-        args (`argparse.Namespace`): The object containing the commandline
-            arguments
-
+        args: The object containing the commandline arguments
     """
     with open(USAGE_SCRIPT, "r") as usage_file:
         usage_code = usage_file.read()
