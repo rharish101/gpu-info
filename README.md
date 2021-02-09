@@ -18,3 +18,21 @@ To use the script, run it on your local desktop as follows:
 ```
 ./gpu_info.py HOSTNAME [HOSTNAME...]
 ```
+
+## For Contributing
+[pre-commit](https://pre-commit.com/) is used for managing hooks that run before each commit, to ensure code quality and run some basic tests.
+Thus, this needs to be set up only when one intends to commit changes to git.
+
+1. *[Optional]* Create and activate a virtual environment with Python >= 3.5.
+2. Install pre-commit:
+    ```sh
+    pip install pre-commit
+    ```
+
+3. Install pre-commit hooks:
+    ```sh
+    pre-commit install
+    ```
+
+**NOTE**: You need to be inside the virtual environment where you installed the above dependencies every time you commit.
+However, this is not required if you have installed pre-commit globally.
