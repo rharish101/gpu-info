@@ -14,10 +14,7 @@ Thus, to know the available CLI options, run:
 ./gpu_info.py --help
 ```
 
-To run the script:
-1. Change the working directory to the root of this repository.
-2. Run `gpu_info.py` on your local desktop as follows:
-    ```
-    ./gpu_info.py HOSTNAME [HOSTNAME...]
-    ```
-
+To use the script, run it on your local desktop as follows:
+```
+./gpu_info.py HOSTNAME [HOSTNAME...]
+```

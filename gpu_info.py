@@ -3,6 +3,7 @@
 import json
 import subprocess
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
+from pathlib import Path
 from typing import Dict, List
 
 from gpu_usage import FREE
@@ -63,7 +64,8 @@ def main(args: Namespace) -> None:
     Arguments:
         args: The object containing the commandline arguments
     """
-    with open(USAGE_SCRIPT, "r") as usage_file:
+    script_dir = Path(__file__).resolve().parent
+    with open(script_dir / USAGE_SCRIPT, "r") as usage_file:
         usage_code = usage_file.read()
 
     cmd = ["ssh"]
