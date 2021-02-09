@@ -3,7 +3,6 @@
 import json
 import subprocess
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
-from getpass import getuser
 from typing import Dict, List
 
 from gpu_usage import FREE
@@ -69,13 +68,15 @@ def main(args: Namespace) -> None:
 
     cmd = ["ssh"]
     if args.jump_host is not None:
-        cmd += ["-J", f"{args.username}@{args.jump_host}"]
+        cmd += ["-J", args.jump_host]
+
+    username_prefix = "" if args.username is None else f"{args.username}@"
 
     info = {}
     for host in args.hosts:
         try:
             proc = subprocess.run(
-                cmd + [f"{args.username}@{host}", "python3"],
+                cmd + [f"{username_prefix}{host}", "python3"],
                 input=usage_code,
                 capture_output=True,
                 timeout=args.timeout,
@@ -108,7 +109,10 @@ if __name__ == "__main__":
         help="list of hostnames for GPU servers",
     )
     parser.add_argument(
-        "-u", "--username", type=str, default=getuser(), help="SSH username"
+        "-u",
+        "--username",
+        type=str,
+        help="common SSH username for all hosts",
     )
     parser.add_argument(
         "-J", "--jump-host", type=str, help="jump host for SSH"
