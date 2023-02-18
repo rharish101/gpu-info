@@ -2,7 +2,7 @@
 
 # SPDX-FileCopyrightText: 2019 Harish Rajagopal <harish.rajagopals@gmail.com>
 #
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: LGPL-3.0-or-later
 
 """Get GPU usage over multiple hosts."""
 import json

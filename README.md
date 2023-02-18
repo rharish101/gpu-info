@@ -1,7 +1,7 @@
 <!--
 SPDX-FileCopyrightText: 2019 Harish Rajagopal <harish.rajagopals@gmail.com>
 
-SPDX-License-Identifier: MIT
+SPDX-License-Identifier: LGPL-3.0-or-later
 -->
 
 # GPU Usage Monitoring
@@ -48,4 +48,4 @@ This repository uses [REUSE](https://reuse.software/) to document licenses.
 Each file has a header containing copyright and license information.
 The license files that are used in this project can be found in the [LICENSES](./LICENSES) directory.
 
-The MIT license is placed in [LICENSE](./LICENSE), to signify that it constitutes the majority of the codebase, and for compatibility with GitHub.
+A copy of the LGPL-3.0-or-later license without the GPL-3.0-or-later license text is placed in [LICENSE](./LICENSE), to signify that it constitutes the majority of the codebase, and for compatibility with GitHub.
