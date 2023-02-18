@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2019 Harish Rajagopal <harish.rajagopals@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
 """Print usage of each user per GPU."""
 import json
 from subprocess import check_output
